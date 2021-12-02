@@ -8,7 +8,7 @@ import java.io.UncheckedIOException;
 import java.util.Collections;
 import java.util.List;
 
-import solutions.Day;
+import main.java.solutions.Day;
 
 /* Courtesy of @suhuitan <3 */
 public class App {
@@ -23,7 +23,7 @@ public class App {
         //  4) implement and run
 
         // CHANGE ME EVERYDAY!
-        int day = 1;
+        int day = 2;
 
         // you don't really need to touch anything else after this
         Day solution = (Day) instantiate(day);
@@ -41,7 +41,7 @@ public class App {
 
     private static Object instantiate(int day)
             throws ClassNotFoundException, IllegalAccessException, InstantiationException {
-        String fileName = String.format("solutions.Day%02d", day);
+        String fileName = String.format("main.java.solutions.Day%02d", day);
         Class<?> clazz = Class.forName(fileName);
         return clazz.newInstance();
     }
