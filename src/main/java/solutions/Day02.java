@@ -68,7 +68,7 @@ public class Day02 implements Day {
         Integer answer = horizPos * depth;
         return answer.toString();
     }
-    
+
     private static class Instruction {
         String action;
         int value;

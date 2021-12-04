@@ -22,8 +22,8 @@ public class App {
         //  3) update the integer below to the correct day number
         //  4) implement and run
 
-        // CHANGE ME EVERYDAY!
-        int day = 2;
+        // CHANGE ME EVERY DAY!
+        int day = 3;
 
         // you don't really need to touch anything else after this
         Day solution = (Day) instantiate(day);
