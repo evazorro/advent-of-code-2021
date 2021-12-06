@@ -23,7 +23,7 @@ public class App {
         //  4) implement and run
 
         // CHANGE ME EVERY DAY!
-        int day = 4;
+        int day = 5;
 
         // you don't really need to touch anything else after this
         Day solution = (Day) instantiate(day);
