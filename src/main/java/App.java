@@ -8,7 +8,7 @@ import java.io.UncheckedIOException;
 import java.util.Collections;
 import java.util.List;
 
-import main.java.solutions.Day;
+import solutions.Day;
 
 /* Courtesy of @suhuitan <3 */
 public class App {
@@ -41,7 +41,7 @@ public class App {
 
     private static Object instantiate(int day)
             throws ClassNotFoundException, IllegalAccessException, InstantiationException {
-        String fileName = String.format("main.java.solutions.Day%02d", day);
+        String fileName = String.format("solutions.Day%02d", day);
         Class<?> clazz = Class.forName(fileName);
         return clazz.newInstance();
     }

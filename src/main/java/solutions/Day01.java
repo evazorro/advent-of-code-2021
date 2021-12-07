@@ -1,9 +1,9 @@
-package main.java.solutions;
+package solutions;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class Day01 implements Day {
+public class Day01 implements solutions.Day {
 
     @Override
     public String part1(List<String> input) {
