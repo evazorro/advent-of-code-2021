@@ -3,6 +3,8 @@ package main.java.solutions;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
+import java.util.stream.Collectors;
 
 public class Day05 implements Day {
 
@@ -12,12 +14,17 @@ public class Day05 implements Day {
         Map<CoordinatePair, Long> overlapsPerCoordinate = new HashMap<>();
 
         // iterate, skip any where ! x=x or y=y
-        for (String line : input) {
-            String[] strings = line.split(" -> ");
-            LineSegment segment = new LineSegment(strings[0], strings[1]);
-            if (isHorizontalOrVertical(segment)) {
-                overlapsPerCoordinate = traceLineSegment(segment, overlapsPerCoordinate); // walk the line to add it to the map
-            }
+
+
+        List<LineSegment> lineSegments = input.stream()
+                .map(this::toLineSegment)
+                .filter(LineSegment::isHorizontalOrVertical)
+                .collect(Collectors.toList());
+
+        for (LineSegment lineSegment : lineSegments) {
+            System.out.println(lineSegment.getStartCoord().printCoordinates() + " -> " + lineSegment.getEndCoord().printCoordinates());
+            overlapsPerCoordinate = traceLineSegment(lineSegment, overlapsPerCoordinate); // walk the line to add it to the map
+
         }
 
         // then go through the map and count how many values are > 1
@@ -28,14 +35,37 @@ public class Day05 implements Day {
         return String.valueOf(coordsWithOverlaps);
     }
 
-    public boolean isHorizontalOrVertical(LineSegment segment) {
-        return segment.startCoord.getX() == segment.endCoord.getX() || segment.startCoord.getY() == segment.endCoord.getY();
+    private LineSegment toLineSegment(String s) {
+        String[] strings = s.split(" -> ");
+        return new LineSegment(strings[0], strings[1]);
     }
+
+    // map of coordinate pairs
+    // for each pair, if it exists in the map, update the count
+    // otherwise, add it to the map
 
     // TODO figure out why this isn't working
     public Map<CoordinatePair, Long> traceLineSegment(LineSegment segment, Map<CoordinatePair, Long> map) {
-        for (int i = segment.startCoord.getX(); i <= segment.endCoord.getX(); i++) {
-            for (int j = segment.startCoord.getY(); j <= segment.endCoord.getY(); j++) {
+        System.out.println("Current map size: " + map.size());
+
+        // vertical
+        if (segment.getStartCoord().getX() == segment.getEndCoord().getX()) {
+            int i = segment.getStartCoord().getX(); // eww but whatever
+            for (int j = segment.getStartCoord().getY(); j <= segment.getEndCoord().getY(); j++) {
+                CoordinatePair currentCoords = new CoordinatePair(i, j);
+                if (map.containsKey(currentCoords)) {
+                    Long count = map.get(currentCoords);
+                    System.out.println("Current number of overlaps: " + count);
+                    map.put(currentCoords, count+1);
+                } else {
+                    System.out.println("Adding coordinates: " + i +", " + j);
+                    map.put(currentCoords, 1L);
+                }
+            }
+        } else {
+            // horizontal
+            int j = segment.getStartCoord().getY();
+            for (int i = segment.getStartCoord().getX(); i <= segment.getEndCoord().getX(); i++) {
                 CoordinatePair currentCoords = new CoordinatePair(i, j);
                 if (map.containsKey(currentCoords)) {
                     Long count = map.get(currentCoords);
@@ -71,6 +101,28 @@ public class Day05 implements Day {
         public int getY() {
             return y;
         }
+
+        public String printCoordinates() {
+            StringBuilder sb = new StringBuilder();
+            String s = sb.append(x)
+                    .append(",")
+                    .append(y)
+                    .toString();
+            return s;
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (o == null || getClass() != o.getClass()) return false;
+            CoordinatePair that = (CoordinatePair) o;
+            return x == that.x && y == that.y;
+        }
+
+        @Override
+        public int hashCode() {
+            return Objects.hash(x, y);
+        }
     }
 
     public class LineSegment {
@@ -83,14 +135,10 @@ public class Day05 implements Day {
             int x2 = Integer.parseInt(end.substring(0, end.indexOf(',')));
             int y2 = Integer.parseInt(end.substring(end.indexOf(',') + 1));
 
-            if (x1 < x2) {
-                startCoord = new CoordinatePair(x1, y1);
-                endCoord = new CoordinatePair(x2, y2);
-            }
-            else {
-                startCoord = new CoordinatePair(x2, y2);
-                endCoord = new CoordinatePair(x1, y1);
-            }
+            // sort the coordinates so the lines are all going in the right direction
+            // (this almost killed me but I did it)
+            startCoord = ((x1 - x2) + (y1 - y2) < 0) ? new CoordinatePair(x1, y1) : new CoordinatePair(x2, y2);
+            endCoord = ((x1 - x2) + (y1 - y2) < 0) ? new CoordinatePair(x2, y2) : new CoordinatePair(x1, y1);
         }
 
         public CoordinatePair getStartCoord() {
@@ -99,6 +147,10 @@ public class Day05 implements Day {
 
         public CoordinatePair getEndCoord() {
             return endCoord;
+        }
+
+        public boolean isHorizontalOrVertical() {
+            return startCoord.getX() == endCoord.getX() || startCoord.getY() == endCoord.getY();
         }
     }
 }
